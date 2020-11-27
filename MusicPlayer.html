@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="jquery-3.5.1.min.js"></script>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <input id="folder-input" type="file" webkitdirectory directory multiple>
+  <audio id="the-player" controls></audio>
+
+  <script>
+    const slashOrBack = /\/|\\/
+    
+    const thePlayer= $('#the-player')[0]
+    const folderInput= $('#folder-input')[0]
+    const library= {}
+    folderInput.onchange= ()=> {
+      let files = folderInput.files
+      for (file of files) {
+        if (file.name.slice(-4) == '.mp3') {
+          let path = file.webkitRelativePath.split(slashOrBack).slice(0, -1).join('/')
+          if (!(path in library)) {
+            library[path] = []
+          }
+          library[path].push(file)
+        }
+      }
+      folderInput.value = null
+    }
+    setMp3= (file)=> {
+      thePlayer.src= URL.createObjectURL(file)
+    }
+  </script>
+</body>
+</html>
