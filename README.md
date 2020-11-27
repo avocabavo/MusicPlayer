@@ -6,12 +6,14 @@ Don't you hate it when you pop a usb drive or sd card full of music into a works
 This is a nice lightweight static html page that can live alongside your music filestructure - play it on anything that can open a local html page.
 
 ### Usage
-1. Clone this project.
-2. Put mp3 files in the same directory as MusicPlayer.html, or in sub-directories.
-3. Open MusicPlayer.html with your favorite browser and start listening!
+1. Clone this project (or grab a release).
+2. Open MusicPlayer.html with your favorite browser.
+3. "upload" the folder with all the music using the TBD button.
+  * "upload" is in scare quotes because the files don't actually move at all when uploaded to a local page like this.
+4. Start listening to your music.
 
 ### Features
-- [ ] Automatically discovers mp3 files and organizes them into tabs within the page.
+- [ ] Discovers mp3 files from a chosen directory and organizes them into tabs within the page.
 - [ ] Next mp3 behavior (Loop Single, Loop Tab or None) settable with a single click and readable without having to hover or click.
 - [ ] Infer artist and track name from file names like "[Artist] - [Track].mp3" otherwise use the complete filename as both artist and track.
 - [ ] Sort by artist, track or file modification date.
