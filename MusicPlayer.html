@@ -17,14 +17,26 @@
     const folderInput= $('#folder-input')[0]
     const library= {}
     folderInput.onchange= ()=> {
-      let files = folderInput.files
+      let files= folderInput.files
       for (file of files) {
         if (audioFormats.some(af=> file.name.endsWith(af))) {
-          let path = file.webkitRelativePath.split(slashOrBack).slice(0, -1).join('/')
-          if (!(path in library)) {
-            library[path] = []
+          let path= file.webkitRelativePath.split(slashOrBack).slice(0, -1)
+          let fileName= file.webkitRelativePath.split(slashOrBack).slice(-1)[0]
+          for (pathIndex in path) {
+            let prePath = path.slice(0, pathIndex)
+            let subLibrary = library
+            for (prePathPart of prePath) {
+              subLibrary= subLibrary[prePathPart]
+            }
+            if (!(path[pathIndex] in subLibrary)) {
+              subLibrary[path[pathIndex]]= {}
+            }
           }
-          library[path].push(file)
+          let subLibrary= library
+          for (pathPart of path) {
+            subLibrary= subLibrary[pathPart]
+          }
+          subLibrary[fileName]= file
         }
       }
       folderInput.value = null
