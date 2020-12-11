@@ -10,7 +10,8 @@
   <audio id="the-player" controls></audio>
 
   <script>
-    const slashOrBack = /\/|\\/
+    const slashOrBack= /\/|\\/
+    const audioFormats= ['.mp3']
     
     const thePlayer= $('#the-player')[0]
     const folderInput= $('#folder-input')[0]
@@ -18,7 +19,7 @@
     folderInput.onchange= ()=> {
       let files = folderInput.files
       for (file of files) {
-        if (file.name.slice(-4) == '.mp3') {
+        if (audioFormats.some(af=> file.name.endsWith(af))) {
           let path = file.webkitRelativePath.split(slashOrBack).slice(0, -1).join('/')
           if (!(path in library)) {
             library[path] = []
@@ -28,7 +29,7 @@
       }
       folderInput.value = null
     }
-    setMp3= (file)=> {
+    function setTrack(file) {
       thePlayer.src= URL.createObjectURL(file)
     }
   </script>
