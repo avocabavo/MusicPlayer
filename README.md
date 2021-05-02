@@ -13,7 +13,7 @@ This is a nice lightweight static html page that can live alongside your music f
 4. Start listening to your music.
 
 ### Features
-- [ ] Discovers mp3 files from a chosen directory and organizes them into tabs within the page.
+- [ ] Discovers mp3 files from a chosen directory and organizes them into a tree navigator within the page.
 - [ ] Next mp3 behavior (Loop Single, Loop Tab or None) settable with a single click and readable without having to hover or click.
 - [ ] Infer artist and track name from file names like "[Artist] - [Track].mp3" otherwise use the complete filename as both artist and track.
 - [ ] Sort by artist, track or file modification date.

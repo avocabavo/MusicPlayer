@@ -1,49 +1,53 @@
 <!DOCTYPE html>
+<!-- MusicPlayer.html -->
 <html>
 <head>
-  <meta charset="utf-8">
-  <script src="jquery-3.5.1.min.js"></script>
-  <script src="vue.js"></script>
+<meta charset="utf-8">
+<script src="jquery-3.5.1.min.js"></script>
+<script src="vue.js"></script>
+
+<script type="text/x-template" id="track-tree-template">
+<li>
+  <p>{{ name }}</p>
+  <ul v-if="dirArray.length > 0">
+    <track-tree
+      v-for="dir in dirArray"
+      :name="dir.name"
+      :key="dir.name"
+      :dir-array="dir.dirArray"
+      :track-array="dir.trackArray"
+    ></track-tree>
+  </ul>
+  <ul v-if="trackArray.length > 0">
+    <li v-for="track in trackArray">
+      <p>{{ track.name }}</p>
+    </li>
+  </ul>
+</li>
+</script>
+
+<script src="MusicPlayer.js"></script>
 </head>
 <body>
-  <input id="folder-input" type="file" webkitdirectory directory multiple>
-  <audio id="the-player" controls></audio>
 
-  <script>
-    const slashOrBack= /\/|\\/
-    const audioFormats= ['.mp3']
-    
-    const thePlayer= $('#the-player')[0]
-    const folderInput= $('#folder-input')[0]
-    const library= {}
-    folderInput.onchange= ()=> {
-      let files= folderInput.files
-      for (file of files) {
-        if (audioFormats.some(af=> file.name.endsWith(af))) {
-          let path= file.webkitRelativePath.split(slashOrBack).slice(0, -1)
-          let fileName= file.webkitRelativePath.split(slashOrBack).slice(-1)[0]
-          for (pathIndex in path) {
-            let prePath = path.slice(0, pathIndex)
-            let subLibrary = library
-            for (prePathPart of prePath) {
-              subLibrary= subLibrary[prePathPart]
-            }
-            if (!(path[pathIndex] in subLibrary)) {
-              subLibrary[path[pathIndex]]= {}
-            }
-          }
-          let subLibrary= library
-          for (pathPart of path) {
-            subLibrary= subLibrary[pathPart]
-          }
-          subLibrary[fileName]= file
-        }
-      }
-      folderInput.value = null
-    }
-    function setTrack(file) {
-      thePlayer.src= URL.createObjectURL(file)
-    }
-  </script>
+<div id="app">
+  <div>
+    <input 
+      id="folder-input" 
+      type="file" 
+      v-on:change="openFolder"
+      webkitdirectory directory multiple>
+    <audio id="the-player" controls></audio>
+  </div>
+  <div>
+    <track-tree
+      :name="library.name"
+      :key="library.name"
+      :dir-array="library.dirArray"
+      :track-array="library.trackArray"
+    ></track-tree>
+  </div>
+</div>
+
 </body>
 </html>
