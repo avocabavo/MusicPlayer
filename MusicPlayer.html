@@ -8,19 +8,29 @@
 
 <script type="text/x-template" id="track-tree-template">
 <li>
-  <p>{{ name }}</p>
-  <ul v-if="dirArray.length > 0">
+  <button @click="toggleExpanded">
+    <strong>{{ itself.name }}</strong>
+    <span>[{{ itself.expanded ? 'v' : '>' }}]</span>
+  </button>
+  <button
+    :class="{ included: itself.includedToggle, excluded: !itself.includedToggle }"
+    @click="toggleInclusion"
+  >
+    {{ itself.includedToggle ? '✔️' : '❌' }}
+  </button>
+  <span>{{ itself.inclusionDisplay }}</span>
+  <span>{{ itself.inclusionResult ? 'included' : 'excluded' }}</span>
+  <ul v-if="itself.expanded && itself.dirArray.length > 0">
     <track-tree
-      v-for="dir in dirArray"
-      :name="dir.name"
+      v-for="dir in itself.dirArray"
+      :itself="dir"
       :key="dir.name"
-      :dir-array="dir.dirArray"
-      :track-array="dir.trackArray"
     ></track-tree>
   </ul>
-  <ul v-if="trackArray.length > 0">
-    <li v-for="track in trackArray">
-      <p>{{ track.name }}</p>
+  <ul v-if="itself.expanded && itself.trackArray.length > 0">
+    <li v-for="track in itself.trackArray">
+      <span>{{ track.name }}</span>
+      <span>{{ track.inclusionResult }}</span>
     </li>
   </ul>
 </li>
@@ -41,10 +51,8 @@
   </div>
   <div>
     <track-tree
-      :name="library.name"
+      :itself="library"
       :key="library.name"
-      :dir-array="library.dirArray"
-      :track-array="library.trackArray"
     ></track-tree>
   </div>
 </div>

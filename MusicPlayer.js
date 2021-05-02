@@ -3,9 +3,9 @@
 const slashOrBack= /\/|\\/
 const audioFormats= ['.mp3']
 const displayStates= Object.freeze({
-  'none': 1,
-  'some': 2,
-  'all': 3
+  'none': 'none',
+  'some': 'some',
+  'all': 'all'
 })
 
 var app
@@ -21,21 +21,24 @@ class DirNode {
     this.dirArray= []
     this.trackArray= []
 
-    this.displayToggle= true
-    this.displayCalced= displayStates.all
+    this.expanded= true
+
+    this.includedToggle= true
+    this.inclusionDisplay= displayStates.all
+    this.inclusionResult= false
   }
 
-  calculateDisplay() {
-    if (!this.displayToggle) {
-      this.displayCalced= displayStates.none
+  calculateInclusionDisplay() {
+    if (!this.includedToggle) {
+      this.inclusionDisplay= displayStates.none
       return
     }
 
     let anyOn= false, anyOff= false
     for (dirName in this.dirs) {
       let dir= this.dirs[dirName]
-      dir.calculateDisplay()
-      switch (dir.displayCalced) {
+      dir.calculateInclusionDisplay()
+      switch (dir.inclusionDisplay) {
         case displayStates.none:
           anyOff= true
           break
@@ -47,24 +50,47 @@ class DirNode {
           anyOn= true
           break
         default:
-          console.error(`State ${dir.displayToggle} of ${dir.name} unrecognized.`)
+          console.error(`State ${dir.inclusionDisplay} of ${dir.name} unrecognized.`)
       }
     }
     for (trackName in this.tracks) {
       let track = this.tracks[trackName]
-      if (track.displayToggle) {
+      if (track.includedToggle) {
         anyOn= true
       } else {
         anyOf= true
       }
     }
 
-    // as is, displayCalced doesn't depend at all on the local anyOn variable
+    // as is, inclusionDisplay doesn't depend at all on the local anyOn variable
     if (anyOff) {
-      this.displayCalced= displayStates.some
+      this.inclusionDisplay= displayStates.some
       return
     }
-    this.displayCalced= displayStates.all
+    this.inclusionDisplay= displayStates.all
+  }
+  calculateInclusionResult() {
+    let p= this
+    while (p != null) {
+      if (!p.includedToggle) {
+        this.inclusionResult= false
+        return
+      }
+    }
+    this.inclusionResult= true
+  }
+  calculateInclusionResultRecursively(doomed) {
+    if (doomed || !this.includedToggle) {
+      this.inclusionResult= false
+    } else {
+      this.inclusionResult= true
+    }
+    for (dirName in this.dirs) {
+      this.dirs[dirName].calculateInclusionResultRecursively(!this.inclusionResult)
+    }
+    for (trackName in this.tracks) {
+      this.tracks[trackName].calculateInclusionResultRecursively(!this.inclusionResult)
+    }
   }
 }
 
@@ -74,7 +100,25 @@ class TrackNode {
     this.file= file
     this.parent= parent
 
-    this.displayToggle= true
+    this.includedToggle= true
+    this.inclusionResult= false
+  }
+  calculateInclusionResult() {
+    if (!this.includedToggle) {
+      this.inclusionResult= false
+      return
+    }
+    let p= this.parent
+    while (p != null) {
+      if (!p.includedToggle) {
+        this.inclusionResult= false
+        return
+      }
+    }
+    this.inclusionResult= true
+  }
+  calculateInclusionResultRecursively(doomed) {
+    this.inclusionResult= this.includedToggle && !doomed
   }
 }
 
@@ -82,9 +126,18 @@ $(()=> {
   thePlayer= $('#the-player')[0]
 
   Vue.component('track-tree', {
-    // template: '#track-tree-template',
     template: '#track-tree-template',
-    props: ['name', 'dirArray', 'trackArray'],
+    props: ['itself', 'name'],
+    methods: {
+      toggleExpanded() {
+        this.itself.expanded= !this.itself.expanded
+      },
+      toggleInclusion() {
+        this.itself.includedToggle= !this.itself.includedToggle
+        app.library.calculateInclusionDisplay()
+        app.library.calculateInclusionResultRecursively()
+      }
+    }
   })
   
   app= new Vue({
@@ -112,7 +165,7 @@ $(()=> {
         }
         folderInput.value= null
         app.forgeLibraryArrays(app.library)
-        app.library.calculateDisplay()
+        app.library.calculateInclusionDisplay()
       },
       forgeLibraryArrays(subLibrary) {
         todo= [subLibrary]
