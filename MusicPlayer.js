@@ -24,6 +24,48 @@ class DirNode {
     this.displayToggle= true
     this.displayCalced= displayStates.all
   }
+
+  calculateDisplay() {
+    if (!this.displayToggle) {
+      this.displayCalced= displayStates.none
+      return
+    }
+
+    let anyOn= false, anyOff= false
+    for (dirName in this.dirs) {
+      let dir= this.dirs[dirName]
+      dir.calculateDisplay()
+      switch (dir.displayCalced) {
+        case displayStates.none:
+          anyOff= true
+          break
+        case displayStates.some:
+          anyOn= true
+          anyOff= true
+          break
+        case displayStates.all:
+          anyOn= true
+          break
+        default:
+          console.error(`State ${dir.displayToggle} of ${dir.name} unrecognized.`)
+      }
+    }
+    for (trackName in this.tracks) {
+      let track = this.tracks[trackName]
+      if (track.displayToggle) {
+        anyOn= true
+      } else {
+        anyOf= true
+      }
+    }
+
+    // as is, displayCalced doesn't depend at all on the local anyOn variable
+    if (anyOff) {
+      this.displayCalced= displayStates.some
+      return
+    }
+    this.displayCalced= displayStates.all
+  }
 }
 
 class TrackNode {
@@ -52,7 +94,6 @@ $(()=> {
     },
     methods: {
       openFolder() {
-        console.log('in the openFolder function')
         let folderInput= $('#folder-input')[0]
         let files= folderInput.files
         for (file of files) {
@@ -71,6 +112,7 @@ $(()=> {
         }
         folderInput.value= null
         app.forgeLibraryArrays(app.library)
+        app.library.calculateDisplay()
       },
       forgeLibraryArrays(subLibrary) {
         todo= [subLibrary]
