@@ -82,9 +82,11 @@ $(()=> {
             node.dirArray.push(node.dirs[dirName])
             todo.push(node.dirs[dirName])
           }
+          sortByKey(node.dirArray, 'name')
           for (trackName in node.tracks) {
             node.trackArray.push(node.tracks[trackName])
           }
+          sortByKey(node.trackArray, 'name')
         }
       },
       setTrack(file) {
@@ -120,3 +122,14 @@ $(()=> {
   //   // folderInput.value = null
   // }
 })
+
+function sortByKey(array, key) {
+  array.sort(
+    (a, b)=>
+      a[key] < b[key]
+        ? -1
+        : a[key] > b[key]
+          ? 1
+          : 0
+  )
+}
