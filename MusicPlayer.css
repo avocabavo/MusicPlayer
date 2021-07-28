@@ -1,3 +1,7 @@
+:root {
+  --inclusion-sphere-diameter: 0.6rem;
+}
+
 .track {
   border: 0;
 }
@@ -24,12 +28,17 @@
   transform: scale(0.6);
 }
 
+li {
+  list-style: none;
+}
+
 .inline-shape {
   display: inline-block;
-  height: 1rem;
-  width: 1rem;
-  border-radius: 1rem;
+  height: var(--inclusion-sphere-diameter);
+  width: var(--inclusion-sphere-diameter);
+  border-radius: var(--inclusion-sphere-diameter);
   border: 0.3rem solid black;
+  vertical-align: middle;
 }
 
 .include-all-shape {

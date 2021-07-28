@@ -10,6 +10,9 @@
 
 <script type="text/x-template" id="track-tree-template">
 <li>
+  <div class="inline-shape"
+    v-bind:class="{ 'include-all-shape': itself.inclusionDisplay == 'all', 'include-some-shape': itself.inclusionDisplay == 'some', 'include-none-shape': itself.inclusionDisplay == 'none' }"
+  ></div>
   <button @click="toggleExpanded">
     <strong>{{ itself.name }}</strong>
     <span>[{{ itself.expanded ? 'v' : '>' }}]</span>
@@ -26,9 +29,6 @@
     </div>
     <!-- {{ itself.includedToggle ? '✔️' : '❌' }} -->
   </button>
-  <div class="inline-shape"
-    v-bind:class="{ 'include-all-shape': itself.inclusionDisplay == 'all', 'include-some-shape': itself.inclusionDisplay == 'some', 'include-none-shape': itself.inclusionDisplay == 'none' }"
-  ></div>
   <!-- <span>{{ itself.inclusionResult ? 'included' : 'excluded' }}</span> -->
   <ul v-if="itself.expanded && itself.dirArray.length > 0">
     <track-tree
