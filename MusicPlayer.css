@@ -1,0 +1,45 @@
+.track {
+  border: 0;
+}
+
+.included-track {
+  color: black;
+  background-color: white;
+}
+
+.excluded-track {
+  color: darkgray;
+  background-color: lightgray;
+}
+
+.track-tree-root {
+  border: 3px dashed teal;
+}
+
+.sub-button {
+  display: inline-block;
+}
+
+.otherized {
+  transform: scale(0.6);
+}
+
+.inline-shape {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 1rem;
+  border: 0.3rem solid black;
+}
+
+.include-all-shape {
+  background-color: black;
+}
+
+.include-some-shape {
+  background-color: gray;
+}
+
+.include-none-shape {
+  background-color: white;
+}

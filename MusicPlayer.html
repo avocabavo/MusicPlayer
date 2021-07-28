@@ -6,6 +6,8 @@
 <script src="jquery-3.5.1.min.js"></script>
 <script src="vue.js"></script>
 
+<link rel="stylesheet" href="MusicPlayer.css">
+
 <script type="text/x-template" id="track-tree-template">
 <li>
   <button @click="toggleExpanded">
@@ -16,10 +18,18 @@
     :class="{ included: itself.includedToggle, excluded: !itself.includedToggle }"
     @click="toggleInclusion"
   >
-    {{ itself.includedToggle ? '✔️' : '❌' }}
+    <div class="sub-button" v-bind:class="{ otherized: !itself.includedToggle }">
+      <span>✔️</span>
+    </div>
+    <div class="sub-button" v-bind:class="{ otherized: itself.includedToggle }">
+      <span>❌</span>
+    </div>
+    <!-- {{ itself.includedToggle ? '✔️' : '❌' }} -->
   </button>
-  <span>{{ itself.inclusionDisplay }}</span>
-  <span>{{ itself.inclusionResult ? 'included' : 'excluded' }}</span>
+  <div class="inline-shape"
+    v-bind:class="{ 'include-all-shape': itself.inclusionDisplay == 'all', 'include-some-shape': itself.inclusionDisplay == 'some', 'include-none-shape': itself.inclusionDisplay == 'none' }"
+  ></div>
+  <!-- <span>{{ itself.inclusionResult ? 'included' : 'excluded' }}</span> -->
   <ul v-if="itself.expanded && itself.dirArray.length > 0">
     <track-tree
       v-for="dir in itself.dirArray"
@@ -28,9 +38,13 @@
     ></track-tree>
   </ul>
   <ul v-if="itself.expanded && itself.trackArray.length > 0">
-    <li v-for="track in itself.trackArray">
+    <li
+      v-for="track in itself.trackArray"
+      class="track"
+      v-bind:class="{ 'included-track': track.inclusionResult, 'excluded-track': !track.inclusionResult }"
+    >
       <span>{{ track.name }}</span>
-      <span>{{ track.inclusionResult }}</span>
+      <!-- <span>{{ track.inclusionResult }}</span> -->
     </li>
   </ul>
 </li>
@@ -49,7 +63,7 @@
       webkitdirectory directory multiple>
     <audio id="the-player" controls></audio>
   </div>
-  <div>
+  <div class="track-tree-root">
     <track-tree
       :itself="library"
       :key="library.name"

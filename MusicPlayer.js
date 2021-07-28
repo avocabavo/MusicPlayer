@@ -166,6 +166,7 @@ $(()=> {
         folderInput.value= null
         app.forgeLibraryArrays(app.library)
         app.library.calculateInclusionDisplay()
+        app.library.calculateInclusionResultRecursively()
       },
       forgeLibraryArrays(subLibrary) {
         todo= [subLibrary]
