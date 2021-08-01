@@ -2,6 +2,10 @@
   --inclusion-sphere-diameter: 0.6rem;
 }
 
+ul {
+  margin: 0;
+}
+
 .track {
   border: 0;
 }
